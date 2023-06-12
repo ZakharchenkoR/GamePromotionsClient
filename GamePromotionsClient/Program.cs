@@ -1,11 +1,6 @@
-﻿using GamePromotionsClient.Models;
-using GamePromotionsClient.Services;
+﻿using GamePromotionsClient.Services;
 using GamePromotionsClient.Services.Implementations;
-
 using Microsoft.Extensions.DependencyInjection;
-
-using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace GamePromotionsClient
@@ -22,12 +17,7 @@ namespace GamePromotionsClient
             var offerService = serviceProvider.GetService<IOfferService>();
             var app = new Application(eventService, offerService);
             await app.Run();
-
-
-            Console.ReadKey();
         }
-
-
 
         private static void ConfigureServices(IServiceCollection services)
         {
