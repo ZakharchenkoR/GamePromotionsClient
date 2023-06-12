@@ -15,6 +15,7 @@ namespace GamePromotionsClient
             var serviceProvider = services.BuildServiceProvider();
             var eventService = serviceProvider.GetService<IEventService>();
             var offerService = serviceProvider.GetService<IOfferService>();
+
             var app = new Application(eventService, offerService);
             await app.Run();
         }

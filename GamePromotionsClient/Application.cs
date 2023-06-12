@@ -1,4 +1,5 @@
 ﻿using GamePromotionsClient.Common;
+using GamePromotionsClient.Hubs;
 using GamePromotionsClient.Services;
 using System;
 using System.Threading.Tasks;
@@ -9,15 +10,20 @@ namespace GamePromotionsClient
     {
         private readonly IEventService _eventService;
         private readonly IOfferService _offerService;
+        private readonly GameHub _gameHub;
         private bool isAppRunning = true;
+
         public Application(IEventService eventService, IOfferService offerService)
         {
             _eventService = eventService;
             _offerService = offerService;
+            _gameHub = new GameHub();
         }
 
         public async Task Run()
         {
+            await _gameHub.RunServerListener();
+
             do
             {
                 Console.Clear();
@@ -36,6 +42,7 @@ namespace GamePromotionsClient
                     case "2":
                         Console.WriteLine("Exiting the application...");
                         isAppRunning = false;
+                        await _gameHub.StopServerListener();
                         Environment.Exit(0);
                         return;
 
