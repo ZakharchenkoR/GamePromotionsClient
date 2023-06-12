@@ -57,22 +57,29 @@ namespace GamePromotionsClient
         {
             var eventsTask = _eventService.GetEvents();
             var offersTask = _offerService.GetOffers();
-            await Task.WhenAll(eventsTask, offersTask);
-
-            var events = eventsTask.Result;
-            Console.WriteLine("Available events");
-            Console.WriteLine();
-            foreach (var evnt in events)
+            try
             {
-                Printer.Print(evnt);
+                await Task.WhenAll(eventsTask, offersTask);
+
+                var events = eventsTask.Result;
+                Console.WriteLine("Available events");
+                Console.WriteLine();
+                foreach (var evnt in events)
+                {
+                    Printer.Print(evnt);
+                }
+
+                var offers = offersTask.Result;
+                Console.WriteLine("Available offers");
+                Console.WriteLine();
+                foreach (var offer in offers)
+                {
+                    Printer.Print(offer);
+                }
             }
-
-            var offers = offersTask.Result;
-            Console.WriteLine("Available offers");
-            Console.WriteLine();
-            foreach (var offer in offers)
+            catch
             {
-                Printer.Print(offer);
+                Console.WriteLine("An error occurred while connecting to the server...");
             }
         }
     }

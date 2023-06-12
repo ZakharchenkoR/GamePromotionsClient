@@ -43,7 +43,9 @@ namespace GamePromotionsClient.Hubs
                 Console.ReadKey();
             }catch(Exception ex)
             {
-                Console.WriteLine($"An error occurred: {ex.Message}");
+                Console.WriteLine("No connection to the remote server...");
+                Console.WriteLine("Please press any button to continue...");
+                Console.ReadKey();
             }
         }
 

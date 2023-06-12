@@ -1,5 +1,6 @@
 ﻿using GamePromotionsClient.Models;
 using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net.Http;
@@ -21,12 +22,19 @@ namespace GamePromotionsClient.Services.Implementations
             var config = JsonConvert.DeserializeObject<Dictionary<string, string>>(File.ReadAllText("config.json"));
             string url = $"{config["ApiUrl"]}/api/Offer";
 
-            var client = _clientFactory.CreateClient();
-            var response = await client.GetAsync(url);
-            response.EnsureSuccessStatusCode();
-            var responseBody = await response.Content.ReadAsStringAsync();
+            try
+            {
+                var client = _clientFactory.CreateClient();
+                var response = await client.GetAsync(url);
+                response.EnsureSuccessStatusCode();
+                var responseBody = await response.Content.ReadAsStringAsync();
 
-            return JsonConvert.DeserializeObject<List<OfferModel>>(responseBody);
+                return JsonConvert.DeserializeObject<List<OfferModel>>(responseBody);
+            }
+            catch(Exception ex)
+            {
+                throw new InvalidOperationException("No database connection available.", ex);
+            }
         }
     }
 }
