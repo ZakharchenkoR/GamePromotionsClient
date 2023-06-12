@@ -19,33 +19,44 @@ namespace GamePromotionsClient.Hubs
             SetConnection();
         }
 
-        public async Task RunServerListener()
+        public async Task RunServerListener(int retryCount = 25)
         {
-            try
+            _connection.On<OfferModel>("ReceiveOffer", (offer) =>
             {
-                _connection.On<OfferModel>("ReceiveOffer", (offer) =>
-                {
-                    Console.WriteLine("New active offer");
-                    Printer.Print(offer);
-                });
+                Console.WriteLine("New active offer");
+                Printer.Print(offer);
+            });
 
-                _connection.On<EventModel>("ReceiveEvent", (evnt) =>
-                {
-                    Console.WriteLine("New active event");
-                    Printer.Print(evnt);
-                });
-
-                await _connection.StartAsync();
-
-                Console.WriteLine("Connected to server. Waiting for offers and events...");
-                Console.WriteLine("Please press any button to continue...");
-
-                Console.ReadKey();
-            }catch(Exception ex)
+            _connection.On<EventModel>("ReceiveEvent", (evnt) =>
             {
-                Console.WriteLine("No connection to the remote server...");
-                Console.WriteLine("Please press any button to continue...");
-                Console.ReadKey();
+                Console.WriteLine("New active event");
+                Printer.Print(evnt);
+            });
+
+            int counter = 0;
+            while (counter < retryCount)
+            {
+                try
+                {
+                    await _connection.StartAsync();
+
+                    Console.WriteLine("Successfully connected to the remote server...");
+                    Console.WriteLine("Please press any button to continue...");
+
+                    Console.ReadKey();
+                    break;
+                }
+                catch
+                {
+                    Console.WriteLine("No connection to the remote server... retrying in 5 seconds");
+                    await Task.Delay(5000);
+                    counter++;
+                }
+            }
+
+            if (counter == retryCount)
+            {
+                Console.WriteLine("Maximum retry attempts reached. Please check your network connection.");
             }
         }
 
