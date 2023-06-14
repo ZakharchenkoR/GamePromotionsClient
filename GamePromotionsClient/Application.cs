@@ -11,7 +11,6 @@ namespace GamePromotionsClient
         private readonly IEventService _eventService;
         private readonly IOfferService _offerService;
         private readonly GameHub _gameHub;
-        private bool isAppRunning = true;
 
         public Application(IEventService eventService, IOfferService offerService)
         {
@@ -41,7 +40,6 @@ namespace GamePromotionsClient
 
                     case "2":
                         Console.WriteLine("Exiting the application...");
-                        isAppRunning = false;
                         await _gameHub.StopServerListener();
                         Environment.Exit(0);
                         return;
@@ -50,7 +48,7 @@ namespace GamePromotionsClient
                         Console.WriteLine("Invalid option, please choose 1 or 2.");
                         break;
                 }
-            } while (isAppRunning);
+            } while (true);
         }
 
         private async Task GetPromotionsInformation()
